@@ -16,7 +16,16 @@ export class TasksService {
   @Cron(CronExpression.EVERY_2_HOURS)
   async handleCron() {
     this.logger.debug('Called every 2 hours');
-    const infoProducto = await this.scrappingService.getWebData();
-    await this.emailService.getWebData(infoProducto);
+    const infoProductos = await this.scrappingService.getWebData();
+    const infoI7 = infoProductos.find((i) => i.modelName === '82SD004PSP');
+    if (!infoI7.isAgotado)
+      await this.emailService.sendEmailAlertaDisponible(infoI7);
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_3PM)
+  async handleCronDaily() {
+    this.logger.debug('Called every day at 3PM');
+    const infoProductos = await this.scrappingService.getWebData();
+    await this.emailService.sendEmailDiario(infoProductos);
   }
 }

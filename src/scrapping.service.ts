@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import puppeteer from 'puppeteer';
+import puppeteer, { Puppeteer } from 'puppeteer';
 import InforProducto from './model/info-producto';
 
 @Injectable()
 export class ScrappingService {
-  async getWebData(): Promise<InforProducto> {
+  async getWebData(): Promise<InforProducto[]> {
     const browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
@@ -22,8 +22,25 @@ export class ScrappingService {
     );
     await page.evaluate((x) => (x.value = 'ESTUDIANTES'), inputEstudiantes);
     await page.click('button[type=submit]');
+    await page.waitForTimeout(5000);
+    const infoProductoI7 = await this.getInfoProductoByModelName(
+      '82SD004PSP',
+      page,
+    );
+    const infoProductoI5 = await this.getInfoProductoByModelName(
+      '82SD004NSP',
+      page,
+    );
+    await browser.close();
+    return [infoProductoI7, infoProductoI5];
+  }
+
+  async getInfoProductoByModelName(
+    modelName: string,
+    page: puppeteer.Page,
+  ): Promise<InforProducto> {
     const tabProducto: any = await page.waitForSelector(
-      'li[data-code="82SD004PSP"]',
+      `li[data-code="${modelName}"]`,
     );
     const precioElement: any = await tabProducto.waitForSelector('.saleprice');
     const precio: string = await page.evaluate(
@@ -31,13 +48,14 @@ export class ScrappingService {
       precioElement,
     );
     const btnAddCarrito: any = await page.waitForSelector(
-      'button[data-productcode="82SD004PSP"]',
+      `button[data-productcode="${modelName}"]`,
     );
-    const isDisabled: boolean = await page.evaluate(
+    const isDisabledI7: boolean = await page.evaluate(
       (x) => x.disabled,
       btnAddCarrito,
     );
-    await browser.close();
-    return new InforProducto(precio, isDisabled);
+
+    const infoProductoI7 = new InforProducto(modelName, precio, isDisabledI7);
+    return infoProductoI7;
   }
 }

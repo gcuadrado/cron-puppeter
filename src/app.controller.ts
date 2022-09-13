@@ -13,9 +13,9 @@ export class AppController {
   ) {}
 
   @Get()
-  async getHello(): Promise<InforProducto> {
+  async getHello(): Promise<InforProducto[]> {
     const infoProducto = await this.scrappingService.getWebData();
-    this.emailService.getWebData(infoProducto);
+    this.emailService.sendEmailDiario(infoProducto);
     return infoProducto;
   }
 }
