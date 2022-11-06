@@ -93,18 +93,27 @@ export class EmailService {
 
     let html: string = null;
     if (responseSepe != null) {
-      const oficinaConCita = responseSepe.listaOficina.find(
+      const oficinasConCita = responseSepe.listaOficina.filter(
         (oficina) =>
           oficina.primerHuecoDisponible !== '' ||
           oficina.primerHuecoDisponibleDependiente !== '',
       );
-      if (oficinaConCita)
-        html = `La oficina: ${oficinaConCita.oficina} tiene un hueco libre: ${
-          oficinaConCita.primerHuecoDisponible
-            ? oficinaConCita.primerHuecoDisponible
-            : oficinaConCita.primerHuecoDisponibleDependiente
-        }`;
-      else html = 'No hay oficinas con citas disponibles';
+      if (oficinasConCita) {
+        html = oficinasConCita
+          .map(
+            (oficinaConCita) =>
+              `La oficina: ${oficinaConCita.oficina} con la dirección ${
+                oficinaConCita.direccion
+              } tiene un hueco libre: ${
+                oficinaConCita.primerHuecoDisponible
+                  ? oficinaConCita.primerHuecoDisponible
+                  : oficinaConCita.primerHuecoDisponibleDependiente
+              }`,
+          )
+          .join('<br />');
+
+        html += `Puedes coger la cita <a href="https://www.comunidad.madrid/servicios/empleo/cita-previa-oficinas-empleo">AQUí</a>`;
+      } else html = 'No hay oficinas con citas disponibles';
     } else html = 'Error al realizar fetch';
 
     const mailOptions = {
