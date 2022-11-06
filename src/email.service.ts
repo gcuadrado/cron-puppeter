@@ -98,7 +98,7 @@ export class EmailService {
           oficina.primerHuecoDisponible !== '' ||
           oficina.primerHuecoDisponibleDependiente !== '',
       );
-      if (oficinasConCita) {
+      if (oficinasConCita?.length > 0) {
         html = oficinasConCita
           .map(
             (oficinaConCita) =>
