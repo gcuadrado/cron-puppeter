@@ -31,9 +31,9 @@ export class TasksService {
   //   await this.emailService.sendEmailDiario(infoProductos);
   // }
 
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron(CronExpression.EVERY_10_MINUTES)
   async handleSepeCron() {
-    this.logger.debug('Called every hour');
+    this.logger.debug('Called every 10 minutes');
     const responseSepe = await this.sepeService.getHorariosSepe();
     await this.emailService.sendEmailSepe(responseSepe);
   }

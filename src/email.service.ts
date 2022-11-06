@@ -113,22 +113,24 @@ export class EmailService {
           .join('<br />');
 
         html += `Puedes coger la cita <a href="https://www.comunidad.madrid/servicios/empleo/cita-previa-oficinas-empleo">AQUí</a>`;
-      } else html = 'No hay oficinas con citas disponibles';
+      }
     } else html = 'Error al realizar fetch';
 
-    const mailOptions = {
-      from: this.configService.get<string>('SMTP_EMAIL'),
-      to: this.configService.get<string>('SMTP_TO_EMAIL'),
-      subject: 'Informe sepe',
-      html,
-    };
+    if (html !== null) {
+      const mailOptions = {
+        from: this.configService.get<string>('SMTP_EMAIL'),
+        to: this.configService.get<string>('SMTP_TO_EMAIL'),
+        subject: 'Informe sepe',
+        html,
+      };
 
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('Email sent: ' + info.response);
-      }
-    });
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+      });
+    }
   }
 }
