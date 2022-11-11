@@ -98,7 +98,10 @@ export class EmailService {
           oficina.primerHuecoDisponible !== '' ||
           oficina.primerHuecoDisponibleDependiente !== '',
       );
-      if (oficinasConCita?.length > 0) {
+      if (
+        oficinasConCita?.length > 0 &&
+        oficinasConCita.find((o) => o.idOficina === 3455)
+      ) {
         html = oficinasConCita
           .map(
             (oficinaConCita) =>
@@ -110,7 +113,7 @@ export class EmailService {
                   : oficinaConCita.primerHuecoDisponibleDependiente
               }`,
           )
-          .join('<br />');
+          .join('<br /><br />');
 
         html += `Puedes coger la cita <a href="https://www.comunidad.madrid/servicios/empleo/cita-previa-oficinas-empleo">AQUí</a>`;
       }
