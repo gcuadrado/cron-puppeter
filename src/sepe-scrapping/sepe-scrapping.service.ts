@@ -18,6 +18,9 @@ export class SepeScrappingService {
           latOrigen: '40.426549',
           lngOrigen: '-3.567494',
           hasDependientes: '1',
+          tieneTramiteRelacionado: '1',
+          idsJerarquiaTramites: '5',
+          codIdioma: 'es',
         }),
       );
 
